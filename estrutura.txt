@@ -1,0 +1,64 @@
+// Estrutura do Aplicativo de Armazenamento de Certificados
+
+// 1. Componentes Principais
+- Cabeçalho com título e tema alternável
+- Barra lateral para navegação e filtros
+- Área principal dividida em:
+  * Formulário de cadastro/edição
+  * Visualização em lista/grade dos certificados
+  * Visualização detalhada de certificado individual
+
+// 2. Campos do Certificado
+- Nome do Curso (texto)
+- Organização Emissora (texto)
+- Data de Emissão (data)
+- Código da Credencial (texto)
+- URL da Credencial (texto/url)
+- Área Relacionada (seleção com subcategorias)
+- Imagem do Certificado (upload de arquivo)
+
+// 3. Áreas Relacionadas (categorias e subcategorias)
+- Tecnologia da Informação
+  * Desenvolvimento de Software
+  * Análise e Engenharia de Sistemas
+  * Banco de Dados
+  * Infraestrutura de TI
+  * Segurança da Informação
+  * Gestão de Projetos de TI
+  * Cloud Computing
+  * Inteligência Artificial e Machine Learning
+  * Ciência de Dados
+  * Suporte Técnico e Help Desk
+  * IoT
+  * VR/AR
+  * Engenharia de Software
+  * Arquitetura de Software
+  * Automação e Robótica
+  * DevOps
+  * UX/UI
+- Administração e Negócios
+- Educação
+- Saúde
+- Motorista
+- Vendas
+- Outros (com campo para especificar)
+
+// 4. Funcionalidades
+- Adicionar novo certificado
+- Editar certificado existente
+- Excluir certificado
+- Visualizar detalhes do certificado
+- Filtrar por área relacionada
+- Buscar por texto (nome, organização, código)
+- Ordenar por data, nome ou organização
+- Exportar dados (JSON)
+- Importar dados (JSON)
+
+// 5. Armazenamento
+- LocalStorage para dados dos certificados
+- Conversão de imagens para Base64 para armazenamento local
+
+// 6. Interface Responsiva
+- Layout adaptável para desktop e dispositivos móveis
+- Visualização em lista para telas menores
+- Visualização em grade para telas maiores

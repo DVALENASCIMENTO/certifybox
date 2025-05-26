@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CertifyBox</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-certificate"></i>
+                <h1>CertifyBox - Gerenciador de Certificados</h1>
+            </div>
+            <div class="theme-toggle">
+                <i class="fas fa-moon"></i>
+                <i class="fas fa-sun"></i>
+                <div class="toggle-ball"></div>
+            </div>
+        </header>
+
+        <main>
+            <div class="sidebar">
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Buscar certificados...">
+                    <button id="search-btn"><i class="fas fa-search"></i></button>
+                </div>
+                
+                <div class="filter-container">
+                    <h3>Filtrar por Área</h3>
+                    <ul id="area-filters">
+                        <li data-filter="all" class="active">Todas as Áreas</li>
+                        <li data-filter="ti">Tecnologia da Informação</li>
+                        <li data-filter="admin">Administração e Negócios</li>
+                        <li data-filter="educacao">Educação</li>
+                        <li data-filter="saude">Saúde</li>
+                        <li data-filter="motorista">Motorista</li>
+                        <li data-filter="vendas">Vendas</li>
+                        <li data-filter="outros">Outros</li>
+                    </ul>
+                </div>
+                
+                <div class="sort-container">
+                    <h3>Ordenar por</h3>
+                    <select id="sort-select">
+                        <option value="date-desc">Data (mais recente)</option>
+                        <option value="date-asc">Data (mais antiga)</option>
+                        <option value="name-asc">Nome (A-Z)</option>
+                        <option value="name-desc">Nome (Z-A)</option>
+                        <option value="org-asc">Organização (A-Z)</option>
+                        <option value="org-desc">Organização (Z-A)</option>
+                    </select>
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="add-certificate-btn" class="primary-btn">
+                        <i class="fas fa-plus"></i> Novo Certificado
+                    </button>
+                    <button id="import-btn" class="secondary-btn">
+                        <i class="fas fa-file-import"></i> Importar
+                    </button>
+                    <button id="export-btn" class="secondary-btn">
+                        <i class="fas fa-file-export"></i> Exportar
+                    </button>
+                </div>
+            </div>
+            
+            <div class="content">
+                <div class="view-toggle">
+                    <button id="grid-view-btn" class="active"><i class="fas fa-th"></i></button>
+                    <button id="list-view-btn"><i class="fas fa-list"></i></button>
+                </div>
+                
+                <div id="certificates-container" class="grid-view">
+                    <!-- Certificados serão adicionados dinamicamente aqui -->
+                    <div class="empty-state">
+                        <i class="fas fa-certificate"></i>
+                        <h2>Nenhum certificado encontrado</h2>
+                        <p>Adicione seu primeiro certificado clicando no botão "Novo Certificado"</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Modal para adicionar/editar certificado -->
+        <div id="certificate-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modal-title">Adicionar Novo Certificado</h2>
+                    <button class="close-modal">&times;</button>
+                </div>
+                
+                <form id="certificate-form">
+                    <input type="hidden" id="certificate-id">
+                    
+                    <div class="form-group">
+                        <label for="course-name">Nome do Curso*</label>
+                        <input type="text" id="course-name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="issuer">Organização Emissora*</label>
+                        <input type="text" id="issuer" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="issue-date">Data de Emissão*</label>
+                        <input type="date" id="issue-date" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="credential-code">Código da Credencial</label>
+                        <input type="text" id="credential-code">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="credential-url">URL da Credencial</label>
+                        <input type="url" id="credential-url" placeholder="https://">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="area-category">Área Relacionada*</label>
+                        <select id="area-category" required>
+                            <option value="">Selecione uma área</option>
+                            <option value="ti">Tecnologia da Informação</option>
+                            <option value="admin">Administração e Negócios</option>
+                            <option value="educacao">Educação</option>
+                            <option value="saude">Saúde</option>
+                            <option value="motorista">Motorista</option>
+                            <option value="vendas">Vendas</option>
+                            <option value="outros">Outros</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" id="ti-subcategory-group">
+                        <label for="ti-subcategory">Subcategoria de TI</label>
+                        <select id="ti-subcategory">
+                            <option value="">Selecione uma subcategoria</option>
+                            <option value="dev-software">Desenvolvimento de Software</option>
+                            <option value="analise-sistemas">Análise e Engenharia de Sistemas</option>
+                            <option value="banco-dados">Banco de Dados</option>
+                            <option value="infra-ti">Infraestrutura de TI</option>
+                            <option value="seguranca">Segurança da Informação</option>
+                            <option value="gestao-projetos">Gestão de Projetos de TI</option>
+                            <option value="cloud">Cloud Computing</option>
+                            <option value="ia-ml">Inteligência Artificial e Machine Learning</option>
+                            <option value="data-science">Ciência de Dados</option>
+                            <option value="suporte">Suporte Técnico e Help Desk</option>
+                            <option value="iot">IoT</option>
+                            <option value="vr-ar">VR/AR</option>
+                            <option value="eng-software">Engenharia de Software</option>
+                            <option value="arq-software">Arquitetura de Software</option>
+                            <option value="automacao">Automação e Robótica</option>
+                            <option value="devops">DevOps</option>
+                            <option value="ux-ui">UX/UI</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" id="other-area-group">
+                        <label for="other-area">Especifique a Área</label>
+                        <input type="text" id="other-area" placeholder="Digite a área específica">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="certificate-image">Imagem do Certificado</label>
+                        <div class="image-upload-container">
+                            <div class="image-preview" id="image-preview">
+                                <i class="fas fa-upload"></i>
+                                <span>Clique para selecionar ou arraste uma imagem</span>
+                            </div>
+                            <input type="file" id="certificate-image" accept="image/*">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notes">Observações</label>
+                        <textarea id="notes" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" id="cancel-btn" class="secondary-btn">Cancelar</button>
+                        <button type="submit" id="save-btn" class="primary-btn">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Modal para visualizar certificado -->
+        <div id="view-certificate-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="view-modal-title">Detalhes do Certificado</h2>
+                    <button class="close-modal">&times;</button>
+                </div>
+                
+                <div class="certificate-details">
+                    <div class="certificate-image-container">
+                        <img id="view-certificate-image" src="" alt="Imagem do Certificado">
+                    </div>
+                    
+                    <div class="certificate-info">
+                        <h3 id="view-course-name"></h3>
+                        
+                        <div class="info-group">
+                            <span class="info-label">Organização Emissora:</span>
+                            <span id="view-issuer"></span>
+                        </div>
+                        
+                        <div class="info-group">
+                            <span class="info-label">Data de Emissão:</span>
+                            <span id="view-issue-date"></span>
+                        </div>
+                        
+                        <div class="info-group" id="view-code-group">
+                            <span class="info-label">Código da Credencial:</span>
+                            <span id="view-credential-code"></span>
+                        </div>
+                        
+                        <div class="info-group" id="view-url-group">
+                            <span class="info-label">URL da Credencial:</span>
+                            <a id="view-credential-url" href="" target="_blank"></a>
+                        </div>
+                        
+                        <div class="info-group">
+                            <span class="info-label">Área Relacionada:</span>
+                            <span id="view-area"></span>
+                        </div>
+                        
+                        <div class="info-group" id="view-notes-group">
+                            <span class="info-label">Observações:</span>
+                            <p id="view-notes"></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button id="edit-certificate-btn" class="secondary-btn">
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
+                    <button id="delete-certificate-btn" class="danger-btn">
+                        <i class="fas fa-trash"></i> Excluir
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal de confirmação para exclusão -->
+        <div id="confirm-delete-modal" class="modal">
+            <div class="modal-content confirm-modal">
+                <div class="modal-header">
+                    <h2>Confirmar Exclusão</h2>
+                    <button class="close-modal">&times;</button>
+                </div>
+                
+                <div class="confirm-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Tem certeza que deseja excluir este certificado?</p>
+                    <p class="warning">Esta ação não pode ser desfeita.</p>
+                </div>
+                
+                <div class="confirm-actions">
+                    <button id="cancel-delete-btn" class="secondary-btn">Cancelar</button>
+                    <button id="confirm-delete-btn" class="danger-btn">Excluir</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal para importar/exportar -->
+        <div id="import-export-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="import-export-title">Importar/Exportar Dados</h2>
+                    <button class="close-modal">&times;</button>
+                </div>
+                
+                <div class="import-export-container">
+                    <div id="export-section">
+                        <h3>Exportar Dados</h3>
+                        <p>Baixe seus certificados em formato JSON para backup ou transferência.</p>
+                        <button id="download-json-btn" class="primary-btn">
+                            <i class="fas fa-download"></i> Baixar JSON
+                        </button>
+                    </div>
+                    
+                    <div id="import-section">
+                        <h3>Importar Dados</h3>
+                        <p>Carregue um arquivo JSON com certificados previamente exportados.</p>
+                        <div class="file-upload-container">
+                            <input type="file" id="import-json-file" accept=".json">
+                            <label for="import-json-file" class="file-upload-label">
+                                <i class="fas fa-file-upload"></i> Selecionar Arquivo
+                            </label>
+                        </div>
+                        <div id="import-file-name"></div>
+                        <button id="process-import-btn" class="primary-btn" disabled>
+                            <i class="fas fa-file-import"></i> Importar Dados
+                        </button>
+                    </div>
+                    
+                    <div class="import-warning">
+                        <p><strong>Atenção:</strong> A importação substituirá todos os certificados existentes. Certifique-se de fazer um backup antes de importar.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Gerenciador de Certificados &copy; 2025</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
