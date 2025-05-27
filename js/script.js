@@ -717,20 +717,73 @@ function closeCertificateModal() {
 
 // Funções de importação/exportação
 function exportCertificates() {
-    const dataStr = JSON.stringify(certificates, null, 2);
+    const simplifiedData = certificates.map(cert => {
+        return {
+            "Nome do Curso": cert.courseName,
+            "Organização Emissora": cert.issuer,
+            "Data de Emissão": cert.issueDate,
+            "Código da Credencial": cert.credentialCode || '',
+            "URL da Credencial": cert.credentialUrl || '',
+            "Área Relacionada": getExportArea(cert),
+            "Subcategoria de TI": getTISubcategoryName(cert)
+        };
+    });
+
+    const dataStr = JSON.stringify(simplifiedData, null, 2);
     const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-    
+
     const exportFileName = `certificados_${formatDateForFile(new Date())}.json`;
-    
+
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileName);
     linkElement.style.display = 'none';
-    
+
     document.body.appendChild(linkElement);
     linkElement.click();
     document.body.removeChild(linkElement);
 }
+
+function getExportArea(cert) {
+    const categorias = {
+        'ti': 'Tecnologia da Informação',
+        'admin': 'Administração e Negócios',
+        'educacao': 'Educação',
+        'saude': 'Saúde',
+        'motorista': 'Motorista',
+        'vendas': 'Vendas',
+        'outros': cert.otherArea || 'Outros'
+    };
+
+    return categorias[cert.areaCategory] || 'Área Desconhecida';
+}
+
+function getTISubcategoryName(cert) {
+    if (cert.areaCategory !== 'ti') return ''; // Só aplica se for da área de TI
+
+    const subcategories = {
+        'dev-software': 'Desenvolvimento de Software',
+        'analise-sistemas': 'Análise e Engenharia de Sistemas',
+        'banco-dados': 'Banco de Dados',
+        'infra-ti': 'Infraestrutura de TI',
+        'seguranca': 'Segurança da Informação',
+        'gestao-projetos': 'Gestão de Projetos de TI',
+        'cloud': 'Cloud Computing',
+        'ia-ml': 'Inteligência Artificial e Machine Learning',
+        'data-science': 'Ciência de Dados',
+        'suporte': 'Suporte Técnico e Help Desk',
+        'iot': 'IoT',
+        'vr-ar': 'VR/AR',
+        'eng-software': 'Engenharia de Software',
+        'arq-software': 'Arquitetura de Software',
+        'automacao': 'Automação e Robótica',
+        'devops': 'DevOps',
+        'ux-ui': 'UX/UI'
+    };
+
+    return subcategories[cert.tiSubcategory] || '';
+}
+
 
 function importCertificates() {
     const fileInput = document.getElementById('import-json-file');
